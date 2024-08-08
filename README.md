@@ -10,11 +10,11 @@ Este proyecto tiene como objetivo examinar la evolución del sector de telecomun
 ### Desarrollo del Trabajo
 El análisis se llevó a cabo siguiendo estos pasos:
 
-### Recolección de datos de la página oficial de ENACOM.
-Limpieza y preparación de los datos.
-Análisis exploratorio de datos (EDA) para identificar tendencias y patrones.
-Creación de visualizaciones interactivas para presentar los hallazgos.
-Formulación de conclusiones basadas en el análisis realizado.  
+* Recolección de datos de la página oficial de ENACOM.
+* Limpieza y preparación de los datos.
+* Análisis exploratorio de datos (EDA) para identificar tendencias y patrones.
+* Creación de visualizaciones interactivas para presentar los hallazgos.
+* Formulación de conclusiones y desarrollo de KPIs basadas en el análisis realizado.  
 
 ### Fuente de Datos
 Los datos utilizados en este análisis fueron obtenidos de la Entidad Nacional de Comunicaciones (ENACOM) de Argentina. ENACOM proporciona datos abiertos sobre el sector de telecomunicaciones, incluyendo estadísticas sobre acceso a internet, velocidades de conexión y distribución geográfica de los servicios.
