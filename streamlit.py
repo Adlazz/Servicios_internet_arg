@@ -343,6 +343,9 @@ elif page == "KPIs":
     else:
         st.write("No hay suficientes datos para calcular el KPI proyectado.")
 
+    st.title("KPIs del Sector de Telecomunicaciones")
+
+    
 elif page == "Conclusiones":
     st.title("Conclusiones del Análisis")
 
