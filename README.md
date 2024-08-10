@@ -4,6 +4,19 @@
 
 ## Bienvenido al dashboard de análisis del sector de telecomunicaciones en Argentina.
 
+# Índice
+
+- [1. Introducción](#1-introducción)
+- [2. Instalación y Requisitos](#2-instalación-y-requisitos)
+- [3. Uso y Ejecución en Streamlit (local)](#3-uso-y-ejecución-en-streamlit-local)
+- [4. Análisis Preliminar y Recomendaciones para el Proyecto de Telecomunicaciones](#4-análisis-preliminar-y-recomendaciones-para-el-proyecto-de-telecomunicaciones)
+- [5. EDA 1° Parte](#5-eda-1-parte)
+- [6. EDA 2° Parte](#6-eda-2-parte)
+- [7. KPIs (Indicadores Clave de Rendimiento)](#7-kpis-indicadores-clave-de-rendimiento)
+
+
+## 1. Introducción
+
 ### Contexto y Objetivos
 Este proyecto tiene como objetivo examinar la evolución del sector de telecomunicaciones en Argentina, centrándose específicamente en la penetración de internet y la velocidad de conexión en las diferentes provincias del país desde 2014 hasta 2024.
 
@@ -22,7 +35,7 @@ Los datos utilizados en este análisis fueron obtenidos de la Entidad Nacional d
 Puedes explorar más detalles en las secciones de Análisis y Conclusiones.
 
 ***
-## 1. Instalación y Requisitos
+## 2. Instalación y Requisitos
 
 ### Requisitos:
 - Python 3.7 o superior
@@ -52,7 +65,7 @@ source venv/bin/activate
 # Instalar las dependencias
 pip install -r requirements.txt
 ```
-## 4. Uso y Ejecución en Streamlit (local)
+## 3. Uso y Ejecución en Streamlit (local)
 1. Ubicarse en la terminal dentro del directorio donde clonó el repositorio.
 2. Activar el entorno virutal.
    ```
@@ -66,7 +79,7 @@ pip install -r requirements.txt
    streamlit run streamlit.py
    ```
 
-# Análisis Preliminar y Recomendaciones para el Proyecto de Telecomunicaciones
+## 4. Análisis Preliminar y Recomendaciones para el Proyecto de Telecomunicaciones
 
 ## Hojas Principales a Utilizar
 
@@ -123,7 +136,7 @@ pip install -r requirements.txt
 
 ***
 
-# EDA 1° Parte
+## 5. EDA 1° Parte
 ### 1. Análisis temporal y geográfico
 
 ## a) Evolución de la velocidad media nacional:
@@ -478,7 +491,7 @@ La evolución de las velocidades de internet en Argentina muestra un claro progr
 
 El sector de telecomunicaciones en Argentina muestra un crecimiento nominal impresionante, pero este debe interpretarse cuidadosamente en el contexto de alta inflación del país. Mientras que el CAGR y las tasas de crecimiento indican un sector en expansión, es esencial considerar factores macroeconómicos para entender el crecimiento real. La estabilidad observada en la distribución trimestral, junto con la reciente aceleración, sugiere un sector resiliente con potencial de crecimiento continuo, aunque sujeto a los desafíos económicos del país.
 
-# EDA 2° Parte:
+## 6. EDA 2° Parte:
 ## Relaciones y correlaciones:
 ### 1. Penetración vs. Tecnología
 
@@ -729,7 +742,9 @@ La velocidad de internet muestra una relación más fuerte con los ingresos que 
 
 ***
 
-# KPI 1: Aumento del Acceso al Servicio de Internet
+## 7. KPIs (Indicadores Clave de Rendimiento)
+
+## KPI 1: Aumento del Acceso al Servicio de Internet
 
 ## Objetivo
 Aumentar en un 2% el acceso al servicio de Internet para el próximo trimestre, cada 100 hogares, por provincia.
