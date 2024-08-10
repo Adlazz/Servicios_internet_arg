@@ -5,6 +5,7 @@ import seaborn as sns
 import pickle
 import plotly.express as px
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 # Configuración de la página
 st.set_page_config(page_title="Análisis del Sector de Telecomunicaciones en Argentina", layout="wide")
@@ -27,9 +28,12 @@ st.sidebar.title("Navegación")
 page = st.sidebar.radio("Ir a", ["Inicio", "Análisis", "KPIs", "Conclusiones"])
 
 if page == "Inicio":
-    st.title("Análisis del Sector de Telecomunicaciones en Argentina")
-    # Inserta la imagen de portada
+    # Título centrado
+    st.markdown("<h1 style='text-align: center;'>Análisis del Sector de Telecomunicaciones en Argentina</h1>", unsafe_allow_html=True)
+
+    # Imagen centrada y redimensionada
     st.image("images/portada.jpeg")
+
     
     st.write("""
     Bienvenido al dashboard de análisis del sector de telecomunicaciones en Argentina.
@@ -274,7 +278,7 @@ elif page == "Análisis":
 
 elif page == "KPIs":
     st.title("Indicadores Clave de Desempeño (KPIs)")
-
+    st.header("KPI 1: Aumento proyectado en acceso a Internet")
     # KPI principal: Aumento proyectado en acceso a Internet
     df = dfs['Penetracion-hogares'].copy()
     df['Fecha'] = pd.to_datetime(df['Año'].astype(str) + '-' + (df['Trimestre']*3-2).astype(str).str.zfill(2) + '-01')
@@ -343,8 +347,172 @@ elif page == "KPIs":
     else:
         st.write("No hay suficientes datos para calcular el KPI proyectado.")
 
-    st.title("KPIs del Sector de Telecomunicaciones")
+    # KPI 2: Incremento en la Adopción de Fibra Óptica
+    st.header("KPI 2: Incremento en la Adopción de Fibra Óptica")
 
+    df_fibra = dfs['Accesos Por Tecnología'].copy()
+
+    # Manejar valores nulos antes de crear la columna Fecha
+    df_fibra['Año'] = df_fibra['Año'].fillna(0).astype(int)
+    df_fibra['Trimestre'] = df_fibra['Trimestre'].fillna(0).astype(int)
+
+    # Crear la columna Fecha solo para filas con Año y Trimestre válidos
+    df_fibra['Fecha'] = pd.to_datetime(
+        df_fibra[df_fibra['Año'] != 0].apply(
+            lambda row: f"{row['Año']}-{row['Trimestre']*3-2:02d}-01", 
+            axis=1
+        ),
+        format='%Y-%m-%d',
+        errors='coerce'
+    )
+
+    # Eliminar filas donde no se pudo crear una fecha válida
+    df_fibra = df_fibra.dropna(subset=['Fecha'])
+
+    df_fibra = df_fibra.sort_values(['Fecha', 'Provincia'])
+
+    def calcular_incremento_fibra(grupo):
+        grupo['Incremento_FO'] = grupo['Fibra óptica'].pct_change() * 100
+        return grupo
+
+    df_fibra = df_fibra.groupby('Provincia').apply(calcular_incremento_fibra).reset_index(drop=True)
+    ultimo_periodo_fibra = df_fibra[df_fibra['Fecha'] == df_fibra['Fecha'].max()]
+
+    # Preparar datos para el gráfico
+    df_grafico = ultimo_periodo_fibra.copy()
+    df_grafico['Objetivo'] = 5  # 5% de incremento como objetivo
+    df_grafico['Exceso'] = df_grafico['Incremento_FO'].apply(lambda x: max(x - 5, 0))
+    df_grafico['Deficit'] = df_grafico['Incremento_FO'].apply(lambda x: min(x - 5, 0))
+    df_grafico = df_grafico.sort_values('Incremento_FO', ascending=True)
+
+    # Crear gráfico
+    fig = go.Figure()
+
+    # Añadir barras para el déficit (si existe)
+    fig.add_trace(go.Bar(
+        y=df_grafico['Provincia'],
+        x=df_grafico['Deficit'],
+        name='Por debajo del objetivo',
+        orientation='h',
+        marker_color='red',
+        base=0
+    ))
+
+    # Añadir barras para el objetivo
+    fig.add_trace(go.Bar(
+        y=df_grafico['Provincia'],
+        x=df_grafico['Objetivo'],
+        name='Objetivo (5%)',
+        orientation='h',
+        marker_color='yellow',
+        base=0
+    ))
+
+    # Añadir barras para el exceso (si existe)
+    fig.add_trace(go.Bar(
+        y=df_grafico['Provincia'],
+        x=df_grafico['Exceso'],
+        name='Por encima del objetivo',
+        orientation='h',
+        marker_color='green',
+        base=5  # Comienza donde termina el objetivo
+    ))
+
+    # Configurar el diseño
+    fig.update_layout(
+        title='Incremento en Adopción de Fibra Óptica por Provincia (Último Trimestre)',
+        xaxis_title='Incremento (%)',
+        yaxis_title='Provincia',
+        barmode='relative',
+        height=800,
+        width=1000
+    )
+
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig)
+
+    # Estadísticas adicionales
+    provincias_cumplen = df_grafico[df_grafico['Incremento_FO'] >= 5]['Provincia'].tolist()
+    provincias_no_cumplen = df_grafico[df_grafico['Incremento_FO'] < 5]['Provincia'].tolist()
+
+    st.write(f"Provincias que cumplen el objetivo (>= 5% de incremento): {', '.join(provincias_cumplen)}")
+    st.write(f"Provincias que no cumplen el objetivo (< 5% de incremento): {', '.join(provincias_no_cumplen)}")
+    st.write(f"Promedio de incremento en adopción de Fibra Óptica: {df_grafico['Incremento_FO'].mean():.2f}%")
+    st.write(f"Provincia con mayor incremento: {df_grafico['Provincia'].iloc[-1]} ({df_grafico['Incremento_FO'].max():.2f}%)")
+    st.write(f"Provincia con menor incremento: {df_grafico['Provincia'].iloc[0]} ({df_grafico['Incremento_FO'].min():.2f}%)")
+    
+    # KPI 3: Reducción de la Brecha Digital entre Provincias
+    st.header("KPI 3: Reducción de la Brecha Digital entre Provincias")
+
+    df_velocidad = dfs['Velocidad % por prov'].copy()
+    df_velocidad['Fecha'] = pd.to_datetime(df_velocidad['Año'].astype(str) + '-' + (df_velocidad['Trimestre']*3-2).astype(str).str.zfill(2) + '-01')
+    df_velocidad = df_velocidad.sort_values(['Fecha', 'Provincia'])
+
+    def calcular_brecha_digital(grupo):
+        velocidad_max = grupo['Mbps (Media de bajada)'].max()
+        velocidad_min = grupo['Mbps (Media de bajada)'].min()
+        return velocidad_max - velocidad_min
+
+    df_brecha = df_velocidad.groupby('Fecha').apply(calcular_brecha_digital).reset_index()
+    df_brecha.columns = ['Fecha', 'Brecha_Digital']
+
+    # Calcular el objetivo (reducción del 10% cada trimestre)
+    df_brecha['Objetivo'] = df_brecha['Brecha_Digital'].iloc[0] * (0.9 ** ((df_brecha.index) / 4))
+
+    # Crear el gráfico
+    fig = make_subplots(specs=[[{"secondary_y": True}]])
+
+    # Añadir la línea de brecha digital real
+    fig.add_trace(
+        go.Scatter(x=df_brecha['Fecha'], y=df_brecha['Brecha_Digital'], name="Brecha Digital Real"),
+        secondary_y=False,
+    )
+
+    # Añadir la línea de objetivo
+    fig.add_trace(
+        go.Scatter(x=df_brecha['Fecha'], y=df_brecha['Objetivo'], name="Objetivo (Reducción 10% trimestral)", line=dict(dash='dash')),
+        secondary_y=False,
+    )
+
+    # Resaltar el último período
+    ultimo_periodo = df_brecha.iloc[-1]
+    fig.add_trace(
+        go.Scatter(x=[ultimo_periodo['Fecha']], y=[ultimo_periodo['Brecha_Digital']], 
+                mode='markers', marker=dict(size=10, color='red'), name="Último Período"),
+        secondary_y=False,
+    )
+
+    # Configurar el diseño
+    fig.update_layout(
+        title_text="Evolución de la Brecha Digital entre Provincias",
+        xaxis_title="Fecha",
+        yaxis_title="Brecha Digital (Mbps)",
+        height=600,
+        width=1000
+    )
+
+    # Mostrar el gráfico
+    st.plotly_chart(fig)
+
+    # Calcular y mostrar estadísticas
+    ultimo_periodo = df_brecha.iloc[-1]
+    penultimo_periodo = df_brecha.iloc[-2]
+    reduccion_brecha = (penultimo_periodo['Brecha_Digital'] - ultimo_periodo['Brecha_Digital']) / penultimo_periodo['Brecha_Digital'] * 100
+    objetivo_cumplido = reduccion_brecha >= 10
+
+    st.write(f"Brecha digital en el último período: {ultimo_periodo['Brecha_Digital']:.2f} Mbps")
+    st.write(f"Reducción de la brecha respecto al período anterior: {reduccion_brecha:.2f}%")
+    st.write(f"Objetivo de reducción: 10% trimestral")
+    st.write(f"¿Se cumplió el objetivo? {'Sí' if objetivo_cumplido else 'No'}")
+
+    if objetivo_cumplido:
+        st.write("La brecha digital se ha reducido más de lo esperado.")
+    elif reduccion_brecha > 0:
+        st.write("La brecha digital se ha reducido, pero no alcanzó el objetivo del 10%.")
+    elif reduccion_brecha < 0:
+        st.write("La brecha digital ha aumentado.")
+    else:
+        st.write("La brecha digital se ha mantenido constante.")
     
 elif page == "Conclusiones":
     st.title("Conclusiones del Análisis")
