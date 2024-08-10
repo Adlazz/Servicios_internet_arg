@@ -22,17 +22,216 @@ Los datos utilizados en este análisis fueron obtenidos de la Entidad Nacional d
 Puedes explorar más detalles en las secciones de Análisis y Conclusiones.
 
 ***
+## 1. Instalación y Requisitos
+
+### Requisitos:
+- Python 3.7 o superior
+- pandas
+- numpy
+- matplotlib
+- seaborn
+- stats
+
+### Pasos de instalación:
+```bash
+# Clonar el repositorio
+git clone https://github.com/Adlazz/Servicios_internet_arg.git
+
+# Ir al directorio del repositorio
+cd movies_rs
+
+# Crear un entorno virtual
+python -m venv venv
+
+# Activar el entorno virtual
+# En Windows:
+venv\Scripts\activate
+# En macOS/Linux:
+source venv/bin/activate
+
+# Instalar las dependencias
+pip install -r requirements.txt
+```
+## 4. Uso y Ejecución en Streamlit (local)
+1. Ubicarse en la terminal dentro del directorio donde clonó el repositorio.
+2. Activar el entorno virutal.
+   ```
+   # En Windows:
+   venv\Scripts\activate
+   # En macOS/Linux:
+   source venv/bin/activate
+   ```
+3. Para iniciar la Streamlit en un puerto local, ejecute:
+   ```
+   streamlit run streamlit.py
+   ```
+
+# Análisis Preliminar y Recomendaciones para el Proyecto de Telecomunicaciones
+
+## Hojas Principales a Utilizar
+
+1. **"Penetracion-hogares"**: Esta hoja es crucial para el KPI propuesto (aumentar el acceso a internet por cada 100 hogares).
+2. **"Accesos Por Tecnología"**: Proporciona información valiosa sobre los tipos de conexiones, lo que puede ayudar a identificar oportunidades de crecimiento.
+3. **"Velocidad % por prov"**: Útil para analizar la calidad del servicio por provincia.
+4. **"Accesos por velocidad"**: Complementa la información de velocidad y puede ayudar a identificar áreas de mejora.
+5. **"Ingresos"**: Importante para el análisis financiero y la evaluación del desempeño del negocio.
+
+## Relaciones y Análisis Potenciales
+
+1. **Penetración vs. Tecnología**: Cruzar datos de "Penetracion-hogares" con "Accesos Por Tecnología" para ver qué tecnologías están impulsando el crecimiento en diferentes provincias.
+
+2. **Velocidad vs. Penetración**: Comparar "Velocidad % por prov" con "Penetracion-hogares" para ver si hay correlación entre la velocidad ofrecida y la adopción del servicio.
+
+3. **Evolución Temporal**: Usar las columnas de "Año" y "Trimestre" presentes en varias hojas para analizar tendencias a lo largo del tiempo.
+
+4. **Análisis Geográfico**: Utilizar la columna "Provincia" en varias hojas para realizar comparaciones y análisis regionales.
+
+5. **Ingresos vs. Penetración y Velocidad**: Correlacionar los ingresos con la penetración y la velocidad para entender qué factores impulsan los ingresos.
+
+## Acciones Recomendadas
+
+1. **Limpieza y Preparación de Datos**:
+   - Manejar valores nulos, especialmente en hojas como "Accesos por velocidad" donde hay algunos valores faltantes.
+   - Asegurar consistencia en los tipos de datos entre hojas similares.
+
+2. **Creación de Dashboards Interactivos**:
+   - Desarrollar visualizaciones que permitan filtrar por año, trimestre y provincia.
+   - Crear gráficos de tendencias para mostrar la evolución de la penetración, velocidades y tecnologías a lo largo del tiempo.
+
+3. **Análisis de KPIs**:
+   - Implementar el KPI propuesto utilizando la hoja "Penetracion-hogares".
+   - Desarrollar KPIs adicionales, como "Incremento en la Adopción de Fibra Óptica" o "Reducción de la Brecha Digital entre Provincias".
+
+4. **Análisis de Competitividad**:
+   - Comparar las velocidades y tecnologías ofrecidas en diferentes provincias para identificar áreas de oportunidad.
+
+## Hojas que Podrían Tener Menor Prioridad
+
+1. **"Acc_vel_loc_sinrangos"**: Aunque detallada, puede ser demasiado granular para el análisis inicial. Considerar usarla para análisis específicos si es necesario.
+2. **"Velocidad_sin_Rangos"**: Similar a la anterior, puede ser demasiado detallada para el análisis principal.
+3. **"Totales VMD"**: Parece ser un resumen, pero las hojas más detalladas podrían ser más útiles para el análisis.
+
+***
+
+## Próximos Pasos
+
+1. Comenzar con un análisis exploratorio detallado de las hojas principales identificadas.
+2. Crear visualizaciones preliminares para identificar tendencias y patrones.
+3. Desarrollar un dashboard interactivo que integre los datos más relevantes de las diferentes hojas.
+4. Calcular y visualizar el KPI propuesto, junto con otros KPIs relevantes que se identifiquen.
+5. Preparar un informe con recomendaciones basadas en los hallazgos del análisis.
+
+***
 
 # EDA 1° Parte
 ### 1. Análisis temporal y geográfico
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/Analisis_temp_geo/velocidad_media_por_provincia.png)
+## a) Evolución de la velocidad media nacional:
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/Analisis_temp_geo/evolucion_velocidad_por_provincia_heatmap.png)
+![velocidad_media_por_prov](images/Analisis_temp_geo/evolcion_velocidad_media_totalArg.png)
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/Analisis_temp_geo/Tasa_crecimiento_velocidad_por_prov.png)
+### Síntesis de la Conclusión sobre la Evolución de la Velocidad Media de Internet en Argentina (2014-2024)
+
+1. **Crecimiento Exponencial**: La velocidad media de Internet en Argentina ha experimentado un aumento notable, con una aceleración destacada desde 2020.
+
+2. **Fases de Desarrollo**:
+   - **2014-2018**: Crecimiento lento, manteniéndose por debajo de los 20 Mbps.
+   - **2018-2019**: Se observa un punto de inflexión en el crecimiento.
+   - **2020-2024**: Aceleración significativa con proyecciones de superar los 120 Mbps para 2024.
+
+3. **Factores Clave**:
+   - Avances tecnológicos, como la implementación de fibra óptica.
+   - El impacto de la pandemia de COVID-19, que incrementó la demanda debido al trabajo remoto.
+
+4. **Implicaciones**:
+   - Mejora en la competitividad digital del país.
+   - Potencial para la adopción de nuevas tecnologías.
+
+5. **Perspectiva Futura**:
+   - Continuación del crecimiento, aunque posiblemente a un ritmo más moderado.
+   - Señales de una posible saturación a largo plazo.
+
+Este progreso refleja una mejora considerable en la infraestructura digital de Argentina, con beneficios potenciales para la economía y la calidad de vida de los ciudadanos.
+
+## b) Comparación de velocidades entre provincias (último período):
+
+![velocidad_media_por_prov](images/Analisis_temp_geo/velocidad_media_por_provincia.png)
+
+## c) Mapa de calor de la evolución de velocidades por provincia:
+
+![heatmap_evol_velocidad_por_prov](images/Analisis_temp_geo/evolucion_velocidad_por_provincia_heatmap.png)
+
+### Conclusión sobre la Velocidad de Internet por Provincia en Argentina
+
+1. **Disparidad Geográfica**:
+   - Las provincias argentinas muestran grandes diferencias en las velocidades de internet, con la Capital Federal a la cabeza (229.94 Mbps) y Chubut en el último lugar (20.50 Mbps).
+
+2. **Concentración en Zonas Urbanas**:
+   - Las áreas urbanas y económicamente desarrolladas, como Capital Federal, San Luis y Buenos Aires, tienen velocidades significativamente más altas, todas superando los 150 Mbps.
+
+3. **Brecha Digital**:
+   - Existe una notable brecha digital entre las provincias del centro-este y las del sur y noroeste, con Tierra del Fuego, Chubut, La Pampa y San Juan con las velocidades más bajas (menos de 31 Mbps).
+
+4. **Evolución Temporal**:
+   - Aunque todas las provincias han mejorado en velocidad de internet a lo largo del tiempo, el ritmo de progreso varía, con algunas avanzando más rápido que otras.
+
+5. **Factores Influyentes**:
+   - La infraestructura, densidad poblacional y desarrollo económico son factores clave en las diferencias de velocidad. Las provincias con mayor actividad económica y centros urbanos más grandes presentan mejor conectividad.
+
+6. **Desafíos para la Igualdad Digital**:
+   - Es necesario implementar políticas específicas para mejorar la conectividad en las provincias con menor desarrollo, ya que cerrar la brecha digital es fundamental para un desarrollo equitativo en Argentina.
+
+## Implicaciones
+
+- La disparidad en la velocidad de internet puede afectar el desarrollo económico, educativo y social de las regiones.
+- Se requieren inversiones y políticas públicas para mejorar la infraestructura en las provincias menos desarrolladas.
+- Cerrar la brecha digital es crucial para asegurar igualdad de oportunidades en educación en línea, teletrabajo y acceso a servicios digitales.
 
 
+
+## d) Análisis de disparidad:
+
+![disparidad_velocidad](images/Analisis_temp_geo/disparidad_velocidad_entre_provincias.png)
+
+## e) Tasa de crecimiento por provincia:
+
+![tasa_crecimineto_vel_prov](images/Analisis_temp_geo/Tasa_crecimiento_velocidad_por_prov.png)
+
+## f) Evolución de la penetración de Internet por cada 100 hogares y cada 100 habitantes.
+Para una visualización más sencilla, agrupamos las provincias por región.
+
+![evol_penetracion_region](images/Analisis_temp_geo/evol_penetracion_region.png)
+
+![penetracion_por_prov](images/Analisis_temp_geo/penetracion_por_prov_barras.png)
+
+### Evolución de la Penetración de Internet en Argentina
+
+#### Conclusiones Clave
+
+1. **Disparidad Regional**:
+   - CABA lidera en penetración tanto por habitantes (48.8%) como por hogares (119.5%).
+   - Regiones como NEA y NOA muestran los niveles más bajos de penetración.
+
+2. **Crecimiento Generalizado**:
+   - Todas las regiones muestran una tendencia de crecimiento desde 2014 hasta 2024.
+   - La región Pampeana y Patagónica han experimentado el crecimiento más rápido.
+
+3. **Brecha Digital**:
+   - Persiste una marcada diferencia entre CABA y el resto de las provincias.
+   - Provincias del norte como Formosa, Chaco y Santiago del Estero muestran la menor penetración.
+
+4. **Saturación en Áreas Urbanas**:
+   - CABA y algunas provincias superan el 100% de penetración por hogares, indicando múltiples conexiones por hogar.
+
+5. **Desafíos Regionales**:
+   - Las regiones NEA y NOA requieren atención especial para cerrar la brecha digital.
+   - La penetración por hogares es generalmente mayor que por habitantes, sugiriendo conexiones compartidas.
+
+6. **Evolución Temporal**:
+   - Se observa un crecimiento acelerado a partir de 2018 en la mayoría de las regiones.
+   - La pandemia de COVID-19 pudo haber influido en el aumento de la penetración desde 2020.
+
+Esta evolución refleja un progreso significativo en la conectividad de Argentina, pero también destaca la necesidad continua de políticas que aborden las desigualdades regionales en el acceso a internet.
 
 ### Análisis Temporal y Geográfico de Internet en Argentina (2014-2024)
 
@@ -86,13 +285,22 @@ El análisis revela un crecimiento impresionante en la velocidad de internet en 
 
 ### 2. Análisis de tecnologías:
 
-1. Evolución de tecnologías a nivel nacional:
+## a) Evolución de tecnologías a nivel nacional:
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/analisis_tecnologias/evol_accesos_por_tecnologia_arg.png)
+![evol_accesos_tecnologia](images/analisis_tecnologias/evol_accesos_por_tecnologia_arg.png)
+![proporcion_accesos_tecnologias](images/analisis_tecnologias/proporcion_accesos_tecnologias_arg.png)
 
-2. Accesos de fibra optica por provincia(ultimo periodo):
+## b)  Evolución de tecnologías por provincia:
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/analisis_tecnologias/accesos_fibra_opt_prov_ultimoperiodo.png)
+![proporcion_accesos_tecnologias](images/analisis_tecnologias/evol_accesos_tecnologia_bs_as.png)
+![proporcion_accesos_tecnologias](images/analisis_tecnologias/evol_accesos_tecnologia_cba.png)
+![proporcion_accesos_tecnologias](images/analisis_tecnologias/evol_accesos_tecnologia_mza.png)
+![proporcion_accesos_tecnologias](images/analisis_tecnologias/evol_accesos_tecnologia_sta_fe.png)
+
+
+## Accesos de Fibra Óptica por Provincia:
+
+![accesos_fibra_optica](images/analisis_tecnologias/accesos_fibra_opt_prov_ultimoperiodo.png)
 
 **Período analizado: Año 2024, Trimestre 1**  
     - Provincia con más accesos de Fibra Óptica: Buenos Aires (1,799,013 accesos)  
@@ -138,13 +346,16 @@ El análisis revela un crecimiento impresionante en la velocidad de internet en 
 
 La evolución tecnológica del internet en Argentina muestra un claro patrón de modernización, con un rápido crecimiento de tecnologías más avanzadas como la Fibra Óptica. Sin embargo, esta evolución no es uniforme en todo el país, evidenciando desafíos persistentes en términos de equidad digital y desarrollo de infraestructura. El futuro del sector dependerá de cómo se aborden estas disparidades y se fomente la adopción de tecnologías de alta velocidad en todas las regiones.
 
-### 3. Análisis de velocidades
+# 3. Análisis de velocidades
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/analisis_velocidades/heatmap_dist_vel_prov.png)
+## a) Evolución de la distribución de velocidades de internet
+## b) Distribución de velocidades de internet por provincia (Ultimo periodo)
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/analisis_velocidades/dist_vel_5prov_mayor_accesos.png)
+![dist_vel_5prov_mayor_acvesos](images/analisis_velocidades/evol_dist_velocidades.png)
 
+![heatmap_dist_vel_prov](images/analisis_velocidades/heatmap_dist_vel_prov.png)
 
+![dist_vel_5prov_mayor_acvesos](images/analisis_velocidades/dist_vel_5prov_mayor_accesos.png)
 
 # Análisis de Velocidades de Internet en Argentina (2014-2024)
 
@@ -201,7 +412,18 @@ La evolución de las velocidades de internet en Argentina muestra un claro progr
 
 ### 4. Análisis Económico
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/analisis_economico/evol_ingresos_sector_telecom.png)
+## a) Evolución de Ingresos en el Sector:
+
+![evol_ingresos](images/analisis_economico/evol_ingresos_sector_telecom.png)
+
+* Ingreso promedio: 38,850,735.71 miles de pesos
+* Ingreso mínimo: 2,984,054.21 miles de pesos (Fecha: 2014-01-01 00:00:00)
+* Ingreso máximo: 280,419,124.08 miles de pesos (Fecha: 2024-01-01 00:00:00)
+* Tasa de crecimiento promedio trimestral: 12.58%
+* Tasa de crecimiento anual compuesto (CAGR): 57.52%
+
+![boxplot_ingresos](images/analisis_economico/box_plot_dist_ingresos.png)
+
 
 # Análisis Económico del Sector de Telecomunicaciones en Argentina (2014-2024)
 
@@ -260,14 +482,14 @@ El sector de telecomunicaciones en Argentina muestra un crecimiento nominal impr
 ## Relaciones y correlaciones:
 ### 1. Penetración vs. Tecnología
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/penetracion_tecnologia/penetracion_tecnologia.png)
+![penetracion_tecnologia](images/penetracion_tecnologia/penetracion_tecnologia.png)
 
-**Correlaciones entre penetración y tecnologías:**
-Accesos por cada 100 hogares    1.000000
-Cablemodem_porcentaje           0.458014
-Wireless_porcentaje             0.068414
-ADSL_porcentaje                -0.236858
-Fibra óptica_porcentaje        -0.428784
+**Correlaciones entre penetración y tecnologías:**  
+* Accesos por cada 100 hogares    1.000000  
+* Cablemodem_porcentaje           0.458014  
+* Wireless_porcentaje             0.068414  
+* ADSL_porcentaje                -0.236858  
+* Fibra óptica_porcentaje        -0.428784  
 
 **Interpretación de los resultados:**
 
@@ -297,8 +519,6 @@ Tiene una correlación negativa moderada.
 Sorprendentemente, esto sugiere que las provincias con un mayor porcentaje de conexiones de fibra óptica tienden a tener una menor penetración de internet en los hogares.
 Este resultado es contraintuitivo y podría requerir un análisis más profundo.
 
-
-
 **Interpretación general:**
 
 El cable módem parece ser la tecnología más asociada con una alta penetración de internet en los hogares.
@@ -320,12 +540,14 @@ Analizar la evolución temporal de estas correlaciones para ver si han cambiado 
 
 ## 2. Velocidad vs. Penetración
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/vel_penetracion.png)
+![vel_penetracion](images/vel_penetracion.png)
 
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/penetracion_prom_por_vel.png)
+![penetracion_prom_por_vel](images/penetracion_prom_por_vel.png)
 
-**Correlación entre velocidad y penetración: 0.3311**
+### Conclusión sobre la Correlación entre Velocidad y Penetración de Internet
+
+1. **Correlación entre velocidad y penetración: 0.3311**
 
 Esta correlación positiva moderada sugiere que hay una relación entre la velocidad de internet y la penetración, pero no es una relación fuerte o determinante. Significa que, en general, a medida que aumenta la velocidad, tiende a aumentar la penetración, pero otros factores también influyen significativamente.
 
@@ -339,38 +561,29 @@ Esta correlación positiva moderada sugiere que hay una relación entre la veloc
   | 101-150         | 66.588333                    |
   | 51-100          | 63.093750                    |
 
+2. **Penetración por Rango de Velocidad**:
+   - La penetración más alta se encuentra en el rango de velocidad más alto (200+ Mbps) con un promedio de 119.53 accesos por cada 100 hogares, indicando una alta adopción en estas áreas.
+   - Hay una tendencia ascendente en la penetración a medida que aumenta la velocidad, con la excepción del rango 0-50 Mbps, que tiene una penetración más alta que los rangos 51-100 y 101-150 Mbps.
 
+3. **Factores de Influencia**:
+   - La diferencia en penetración entre los rangos más bajos (51-100 y 101-150 Mbps) es pequeña, lo que indica que factores adicionales a la velocidad influyen en la adopción en estas categorías.
 
-Interpretación:  
-a) La penetración más alta se observa en el rango de velocidad más alto (200+ Mbps), con un promedio de 119.53 accesos por cada 100 hogares. Esto sugiere que las áreas con las velocidades más altas tienen una adopción de internet muy alta, incluso superando el 100% (lo que podría indicar múltiples conexiones por hogar).  
-b) Hay una clara tendencia ascendente en la penetración a medida que aumenta la velocidad, con una excepción notable:  
+## Conclusiones
 
-El rango 151-200 Mbps tiene la segunda penetración más alta.
-Sorprendentemente, el rango 0-50 Mbps tiene una penetración más alta que los rangos 51-100 y 101-150 Mbps.  
+- Las velocidades muy altas (200+ Mbps) están asociadas con una adopción significativamente mayor, posiblemente en áreas urbanas o económicamente desarrolladas.
+- La relación entre velocidad y penetración no es completamente lineal, como se observa en el rango 0-50 Mbps, lo que podría estar relacionado con áreas rurales o políticas de inclusión digital.
+- El salto en la penetración para velocidades superiores a 150 Mbps sugiere un posible "punto de inflexión" donde la alta velocidad se vuelve un factor clave para la adopción.
 
-c) La diferencia en penetración entre los rangos más bajos (51-100 y 101-150 Mbps) es relativamente pequeña, lo que sugiere que otros factores además de la velocidad están influyendo en la adopción en estas categorías.    
-**Conclusiones y consideraciones:**  
+## Recomendaciones
 
-- Velocidades muy altas (200+ Mbps) están asociadas con una adopción significativamente mayor, lo que podría indicar que estas áreas tienen características particulares (como ser zonas urbanas o económicamente desarrolladas) que favorecen tanto la alta velocidad como la alta adopción.
-- La relación entre velocidad y penetración no es completamente lineal, como se evidencia en el rango 0-50 Mbps. Esto podría deberse a:
-
-  * Áreas rurales o menos desarrolladas donde las opciones de internet son limitadas, pero la necesidad es alta.
-  * Posibles políticas de inclusión digital enfocadas en áreas de baja velocidad.
-
-
-El salto significativo en la penetración para velocidades superiores a 150 Mbps sugiere que podría haber un "punto de inflexión" donde la alta velocidad se convierte en un factor más determinante para la adopción.
-La moderada correlación (0.3311) indica que, si bien la velocidad es un factor importante, no es el único determinante en la adopción de internet. Otros factores como el costo, la disponibilidad, las políticas locales y las características demográficas también juegan un papel significativo.
-
-**Recomendaciones para análisis adicional:**
-
-- Investigar las características específicas de las áreas con velocidades superiores a 200 Mbps.
-- Examinar las razones detrás de la alta penetración en el rango 0-50 Mbps.
-Considerar factores socioeconómicos y geográficos que puedan influir en la relación entre velocidad y penetración.
+- Investigar las características de las áreas con velocidades superiores a 200 Mbps.
+- Analizar las razones detrás de la alta penetración en el rango 0-50 Mbps.
+- Considerar factores socioeconómicos y geográficos en la relación entre velocidad y penetración.
 
 
 ## 3. Evolución Temporal
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/evol_penet_vel.png)
+![evol_penet_vel](images/evol_penet_vel.png)
 
 # Análisis de la Evolución de Internet en Argentina (2014-2024)
 
@@ -419,11 +632,26 @@ Considerar factores socioeconómicos y geográficos que puedan influir en la rel
 ## Conclusión
 Desarrollo significativo en infraestructura de internet en Argentina, con énfasis en mejora de calidad del servicio en años recientes.
 
-## 4. Análisis Geográfico
+# 4. Ingresos vs. Penetración y Velocidad:  
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/penet_por_prov.png)
+* Correlación entre Ingresos y Penetración: 0.76
+* Correlación entre Ingresos y Velocidad: 0.91
 
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/penetracion_prom_por_vel.png)
+**Regresión lineal - Ingresos vs Penetración:**    
+Pendiente: 3406527.83  
+Intersección: -138832020.86  
+R-cuadrado: 0.58  
+Valor p: 0.0000  
+  
+**Regresión lineal - Ingresos vs Velocidad:**  
+Pendiente: 1964339.72  
+Intersección: -6696208.64  
+R-cuadrado: 0.83  
+Valor p: 0.0000  
+
+![penet_por_prov](images/penet_por_prov.png)
+
+![penetracion_prom_por_vel](images/penetracion_prom_por_vel.png)
 
 
 Provincia con mayor penetración: Capital Federal (119.53)
@@ -437,9 +665,7 @@ Brecha digital en velocidad: 209.44 Mbps
 
 Correlación entre penetración y velocidad: 0.33
 
-## 5. Ingresos vs. Penetración y Velocidad
-
-![Dashboard del Sector de Telecomunicaciones en Argentina](images/ingresos.png)
+![ingresos_penetracion_velocidad](images/ingresos.png)
 
 # Análisis de Ingresos vs Penetración y Velocidad en el Sector de Telecomunicaciones
 
@@ -500,6 +726,8 @@ Correlación entre penetración y velocidad: 0.33
 ## Conclusión Final
 
 La velocidad de internet muestra una relación más fuerte con los ingresos que la penetración. Mientras que aumentar la cobertura (penetración) es importante, mejorar la calidad del servicio (velocidad) podría ser una estrategia más efectiva para el crecimiento de ingresos en el sector de telecomunicaciones.
+
+***
 
 # KPI 1: Aumento del Acceso al Servicio de Internet
 
