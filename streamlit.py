@@ -30,6 +30,7 @@ page = st.sidebar.radio("Ir a", ["Inicio", "Análisis", "KPIs", "Conclusiones"])
 if page == "Inicio":
     # Título centrado
     st.markdown("<h1 style='text-align: center;'>Análisis del Sector de Telecomunicaciones en Argentina</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>por Adrián Lazzarini</h1>", unsafe_allow_html=True)
 
     # Imagen centrada y redimensionada
     st.image("images/portada.jpeg")
