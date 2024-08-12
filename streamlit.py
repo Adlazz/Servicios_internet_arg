@@ -157,29 +157,59 @@ elif page == "Análisis":
     - **Conclusión**: Crecimiento impresionante pero con desigualdades regionales significativas. Necesidad de estrategias para un desarrollo digital equitativo.
     """)
 
-# Sección 2: Distribución de accesos por tecnologías
+    # Sección 2: Distribución de accesos por tecnologías
     st.header('Distribución de Accesos por Tecnologías')
 
     # Preparar los datos
-    df_totales = dfs['Totales Accesos Por Tecnología']
-    df_totales['Fecha'] = pd.to_datetime(df_totales['Año'].astype(str) + '-' + (df_totales['Trimestre']*3).astype(str) + '-01')
-    df_totales = df_totales.set_index('Fecha')
+    df_accesos = dfs['Accesos Por Tecnología'].copy()
+    df_accesos['Fecha'] = pd.to_datetime(df_accesos['Año'].astype(str) + '-' + (df_accesos['Trimestre']*3-2).astype(str).str.zfill(2) + '-01')
     tecnologias = ['ADSL', 'Cablemodem', 'Fibra óptica', 'Wireless', 'Otros']
 
-    # Gráfico de evolución de accesos
-    fig, ax = plt.subplots(figsize=(15, 8))
-    for tech in tecnologias:
-        ax.plot(df_totales.index, df_totales[tech], label=tech)
+    # Calcular el total nacional
+    df_total_nacional = df_accesos.groupby('Fecha')[tecnologias].sum().reset_index()
+    df_total_nacional['Provincia'] = 'Total Nacional'
 
-    ax.set_title('Evolución de Accesos por Tecnología a Nivel Nacional')
-    ax.set_xlabel('Fecha')
-    ax.set_ylabel('Número de Accesos')
-    ax.legend()
-    plt.xticks(rotation=45)
-    st.pyplot(fig)
+    # Combinar datos provinciales y nacionales
+    df_accesos = pd.concat([df_accesos, df_total_nacional])
+
+    # Crear selectbox para elegir provincia
+    provincias = ['Total Nacional'] + sorted(df_accesos['Provincia'].unique().tolist())
+    provincia_seleccionada = st.selectbox('Seleccione una provincia o el total nacional:', provincias)
+
+    # Filtrar datos para la provincia seleccionada
+    df_filtrado = df_accesos[df_accesos['Provincia'] == provincia_seleccionada]
+
+    # Crear gráfico interactivo con Plotly
+    fig = go.Figure()
+
+    for tech in tecnologias:
+        fig.add_trace(go.Scatter(
+            x=df_filtrado['Fecha'],
+            y=df_filtrado[tech],
+            mode='lines',
+            name=tech
+        ))
+
+    fig.update_layout(
+        title=f'Evolución de Accesos por Tecnología - {provincia_seleccionada}',
+        xaxis_title='Fecha',
+        yaxis_title='Número de Accesos',
+        legend_title='Tecnología',
+        height=600,
+        width=1000
+    )
+
+    st.plotly_chart(fig)
+
+    # Mostrar estadísticas adicionales
+    ultimo_periodo = df_filtrado[df_filtrado['Fecha'] == df_filtrado['Fecha'].max()]
+    st.write(f"Estadísticas para {provincia_seleccionada} en el último período ({ultimo_periodo['Fecha'].iloc[0].strftime('%Y-%m')})")
+    for tech in tecnologias:
+        st.write(f"{tech}: {ultimo_periodo[tech].iloc[0]:,.0f} accesos")
+    st.write(f"Total: {ultimo_periodo['Total'].iloc[0]:,.0f} accesos")
 
     # Gráfico de área apilada
-    df_prop = df_totales[tecnologias].div(df_totales[tecnologias].sum(axis=1), axis=0)
+    df_prop = df_total_nacional[tecnologias].div(df_total_nacional[tecnologias].sum(axis=1), axis=0)
     fig, ax = plt.subplots(figsize=(15, 8))
     df_prop.plot.area(stacked=True, ax=ax)
     ax.set_title('Proporción de Accesos por Tecnología a Nivel Nacional')
@@ -274,6 +304,85 @@ elif page == "Análisis":
 
     st.write("""
     La evolución tecnológica del internet en Argentina muestra un claro patrón de modernización, con un rápido crecimiento de tecnologías más avanzadas como la Fibra Óptica. Sin embargo, esta evolución no es uniforme en todo el país, evidenciando desafíos persistentes en términos de equidad digital y desarrollo de infraestructura. El futuro del sector dependerá de cómo se aborden estas disparidades y se fomente la adopción de tecnologías de alta velocidad en todas las regiones.
+    """)
+
+    # Sección 5: Provincias por Velocidad y Penetración
+    st.header("Top 5 Provincias por Velocidad y Penetración")
+
+    # Obtener el último año y trimestre disponible
+    ultimo_anio = max(dfs['Velocidad % por prov']['Año'].max(), dfs['Penetracion-hogares']['Año'].max())
+    ultimo_trimestre = max(
+        dfs['Velocidad % por prov'][dfs['Velocidad % por prov']['Año'] == ultimo_anio]['Trimestre'].max(),
+        dfs['Penetracion-hogares'][dfs['Penetracion-hogares']['Año'] == ultimo_anio]['Trimestre'].max()
+    )
+
+    # Filtrar los datos más recientes
+    velocidad_reciente = dfs['Velocidad % por prov'][
+        (dfs['Velocidad % por prov']['Año'] == ultimo_anio) & 
+        (dfs['Velocidad % por prov']['Trimestre'] == ultimo_trimestre)
+    ].sort_values('Mbps (Media de bajada)', ascending=False).head()
+
+    penetracion_reciente = dfs['Penetracion-hogares'][
+        (dfs['Penetracion-hogares']['Año'] == ultimo_anio) & 
+        (dfs['Penetracion-hogares']['Trimestre'] == ultimo_trimestre)
+    ].sort_values('Accesos por cada 100 hogares', ascending=False).head()
+
+    # Crear gráfico interactivo
+    fig = go.Figure()
+
+    # Añadir barras para velocidad
+    fig.add_trace(go.Bar(
+        x=velocidad_reciente['Provincia'],
+        y=velocidad_reciente['Mbps (Media de bajada)'],
+        name='Velocidad (Mbps)',
+        marker_color='blue'
+    ))
+
+    # Añadir barras para penetración
+    fig.add_trace(go.Bar(
+        x=penetracion_reciente['Provincia'],
+        y=penetracion_reciente['Accesos por cada 100 hogares'],
+        name='Penetración (Accesos por 100 hogares)',
+        marker_color='green',
+        visible='legendonly'
+    ))
+
+    # Actualizar el diseño
+    fig.update_layout(
+        title=f'Top 5 Provincias por Velocidad y Penetración (Año {ultimo_anio}, Trimestre {ultimo_trimestre})',
+        xaxis_title='Provincia',
+        yaxis_title='Valor',
+        barmode='group',
+        height=500,
+        width=800
+    )
+
+    # Mostrar el gráfico en Streamlit
+    st.plotly_chart(fig)
+
+    # Mostrar tabla con datos
+    st.subheader("Datos detallados")
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.write("Top 5 por Velocidad")
+        st.dataframe(velocidad_reciente[['Provincia', 'Mbps (Media de bajada)']])
+
+    with col2:
+        st.write("Top 5 por Penetración")
+        st.dataframe(penetracion_reciente[['Provincia', 'Accesos por cada 100 hogares']])
+
+    # Breve conclusión
+    st.subheader("Conclusión")
+    st.write("""
+    El análisis del top 5 de provincias por velocidad y penetración de internet revela interesantes patrones:
+
+    1. **Liderazgo de Capital Federal**: Encabeza tanto en velocidad como en penetración, evidenciando una infraestructura digital avanzada.
+    2. **Diversidad geográfica**: Provincias como San Luis y Tierra del Fuego muestran un desempeño notable, sugiriendo que el desarrollo digital no se limita a las áreas más pobladas.
+    3. **Relación velocidad-penetración**: Aunque hay cierta correlación, no todas las provincias con alta velocidad tienen necesariamente alta penetración, y viceversa.
+    4. **Desafío de equidad**: Las diferencias entre las provincias top y el resto del país indican la necesidad de políticas para reducir la brecha digital.
+
+    Estos resultados subrayan la importancia de estrategias diferenciadas por provincia para mejorar tanto la velocidad como la penetración de internet, considerando las características únicas de cada región.
     """)
 
 elif page == "KPIs":
