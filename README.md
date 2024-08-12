@@ -13,7 +13,8 @@
 - [5. EDA 1° Parte](#5-eda-1-parte)
 - [6. EDA 2° Parte](#6-eda-2-parte)
 - [7. KPIs (Indicadores Clave de Rendimiento)](#7-kpis-indicadores-clave-de-rendimiento)
-- [8. Enlaces de documentación](#8-enlaces-de-documentación)
+- [8. Deployment](#8-deployment)
+- [9. Enlaces de documentación](#9-enlaces-de-documentación)
 
 ## 1. Introducción
 
@@ -829,7 +830,11 @@ Meta = 179.94 × 0.90 = 161.946 Mbps
 # Conclusión
 Estos KPIs adicionales, junto con el incremento del acceso a Internet, proporcionarán una visión integral del desarrollo del sector de telecomunicaciones en Argentina, abordando tanto la modernización tecnológica como la equidad en el acceso y la calidad del servicio en todas las regiones del país.
 
-## 8. Enlaces de documentación
+## 8. Deployment
+
+Enlace del proyecto en Streamlit Cloud: https://serviciosinternetarg-5obabmv64de4k2pnqwxe9h.streamlit.app/
+
+## 9. Enlaces de documentación
 
 Aquí tienes los enlaces a las documentaciones oficiales de las bibliotecas principales utilizadas en este proyecto:
 
