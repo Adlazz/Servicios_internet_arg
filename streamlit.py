@@ -136,7 +136,7 @@ elif page == "Análisis":
     st.pyplot(fig)
 
      # Resumen del análisis
-    st.header("Resumen: Análisis de Internet en Argentina (2014-2024)")
+    st.header("Observaciones:")
 
     st.write("""
     - **Crecimiento Nacional**: La velocidad media de internet aumentó de 3.62 Mbps (2014) a 139.15 Mbps (2024), un crecimiento del 3,744%.
@@ -144,14 +144,12 @@ elif page == "Análisis":
     - **Disparidades Regionales**:
       - CABA lidera con 229.94 Mbps (2024).
       - Región Pampeana y Centro muestran buen desarrollo.
-      - NOA y NEA presentan retraso considerable.
-
-    - **Factores Clave**: Desarrollo económico, urbanización, políticas regionales e inversión en infraestructura.
+      - NOA y NEA presentan retraso considerable.  
 
     - **Evolución Temporal**: Aceleración notable desde 2017, con aumento de la brecha entre regiones.
 
     - **Desafíos**: 
-      1. Abordar la brecha digital entre regiones.
+      1. Abordar la **brecha digital** entre regiones.
       2. Implementar políticas para equidad en acceso y calidad.
       3. Aprovechar oportunidades de crecimiento en regiones menos desarrolladas.
 
@@ -266,30 +264,17 @@ elif page == "Análisis":
     st.subheader('Tendencias Principales')
 
     st.write("""
-    1. **Transición Tecnológica Nacional:**
-    - Declive significativo de ADSL desde 2014.
-    - Auge del Cablemodem como tecnología dominante desde 2018.
-    - Crecimiento exponencial de la Fibra Óptica desde 2019, superando al ADSL en 2022.
-
-    2. **Distribución de Tecnologías:**
+    1. **Distribución de Tecnologías:**
     - 2014: Predominio de ADSL y Cablemodem.
     - 2024: Liderazgo de Cablemodem y Fibra Óptica, con ADSL en declive.
 
-    3. **Variaciones Regionales:**
+    2. **Variaciones Regionales:**
     - Buenos Aires y Córdoba: Patrones similares al nacional.
     - Mendoza y Tucumán: Adopción acelerada de Fibra Óptica, superando otras tecnologías.
 
-    4. **Disparidad en Adopción de Fibra Óptica:**
+    3. **Disparidad en Adopción de Fibra Óptica:**
     - Concentración en provincias más pobladas (Buenos Aires, Córdoba, Santa Fe).
     - Menor penetración en provincias menos pobladas o remotas.
-    """)
-
-    st.subheader('Observaciones Adicionales')
-
-    st.write("""
-    - **Wireless y Otras Tecnologías:** No varía mucho su penetración, es constante, indicando nichos específicos de mercado.
-    - **Brecha Tecnológica:** Evidente entre provincias centrales y periféricas, reflejando desigualdades en infraestructura.
-    - **Velocidad de Transición:** Varía significativamente entre provincias, sugiriendo diferentes niveles de inversión y políticas de desarrollo.
     """)
 
     st.subheader('Implicaciones')
@@ -301,12 +286,7 @@ elif page == "Análisis":
     4. **Obsolescencia Tecnológica:** Necesidad de estrategias para la transición de usuarios de ADSL a tecnologías más modernas.
     """)
 
-    st.subheader('Conclusión')
-
-    st.write("""
-    La evolución tecnológica del internet en Argentina muestra un claro patrón de modernización, con un rápido crecimiento de tecnologías más avanzadas como la Fibra Óptica. Sin embargo, esta evolución no es uniforme en todo el país, evidenciando desafíos persistentes en términos de equidad digital y desarrollo de infraestructura. El futuro del sector dependerá de cómo se aborden estas disparidades y se fomente la adopción de tecnologías de alta velocidad en todas las regiones.
-    """)
-
+   
     # Sección 5: Provincias por Velocidad y Penetración
     st.header("Top 5 Provincias por Velocidad y Penetración")
 
