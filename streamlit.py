@@ -6,6 +6,8 @@ import pickle
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+from scipy import stats
+
 
 # Configuración de la página
 st.set_page_config(page_title="Análisis del Sector de Telecomunicaciones en Argentina", layout="wide")
@@ -251,13 +253,6 @@ elif page == "Análisis":
     plt.tight_layout()
     st.pyplot(fig)
 
-    # Mostrar estadísticas adicionales
-    st.write(f"Período analizado: Año {ultimo_anio}, Trimestre {ultimo_trimestre}")
-    st.write(f"Provincia con más accesos de Fibra Óptica: {ultimo_periodo.iloc[0]['Provincia']} ({ultimo_periodo.iloc[0]['Fibra óptica']:,.0f} accesos)")
-    st.write(f"Provincia con menos accesos de Fibra Óptica: {ultimo_periodo.iloc[-1]['Provincia']} ({ultimo_periodo.iloc[-1]['Fibra óptica']:,.0f} accesos)")
-    st.write(f"Promedio de accesos de Fibra Óptica por provincia: {ultimo_periodo['Fibra óptica'].mean():,.0f}")
-    st.write(f"Mediana de accesos de Fibra Óptica por provincia: {ultimo_periodo['Fibra óptica'].median():,.0f}")
-
     # Sección 4: Informe resumido de la evolución de tecnologías de internet
     st.header('Evolución de Tecnologías de Internet en Argentina (2014-2024)')
 
@@ -327,6 +322,101 @@ elif page == "Análisis":
         st.plotly_chart(fig_comparacion)
     else:
         st.write("Por favor, selecciona al menos una provincia para comparar.")
+
+    # Sección 6: Ingresos vs Penetración y Velocidad
+    st.header("Análisis de Ingresos vs Penetración y Velocidad")
+
+    # Preparar datos
+    df_ingresos = dfs['Ingresos ']
+    df_ingresos['Fecha'] = pd.to_datetime(df_ingresos['Año'].astype(str) + 'Q' + df_ingresos['Trimestre'].astype(str))
+
+    df_penetracion = dfs['Penetracion-hogares']
+    df_penetracion['Fecha'] = pd.to_datetime(df_penetracion['Año'].astype(str) + 'Q' + df_penetracion['Trimestre'].astype(str))
+    df_penetracion = df_penetracion.groupby('Fecha')['Accesos por cada 100 hogares'].mean().reset_index()
+
+    df_velocidad = dfs['Velocidad % por prov']
+    df_velocidad['Fecha'] = pd.to_datetime(df_velocidad['Año'].astype(str) + 'Q' + df_velocidad['Trimestre'].astype(str))
+    df_velocidad = df_velocidad.groupby('Fecha')['Mbps (Media de bajada)'].mean().reset_index()
+
+    df_combinado = pd.merge(df_ingresos, df_penetracion, on='Fecha')
+    df_combinado = pd.merge(df_combinado, df_velocidad, on='Fecha')
+
+    # Calcular correlaciones
+    corr_ingresos_penetracion = df_combinado['Ingresos (miles de pesos)'].corr(df_combinado['Accesos por cada 100 hogares'])
+    corr_ingresos_velocidad = df_combinado['Ingresos (miles de pesos)'].corr(df_combinado['Mbps (Media de bajada)'])
+
+    st.write(f"Correlación entre Ingresos y Penetración: {corr_ingresos_penetracion:.2f}")
+    st.write(f"Correlación entre Ingresos y Velocidad: {corr_ingresos_velocidad:.2f}")
+
+    # Gráficos de dispersión
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(
+        x=df_combinado['Accesos por cada 100 hogares'],
+        y=df_combinado['Ingresos (miles de pesos)'],
+        mode='markers',
+        name='Ingresos vs Penetración'
+    ))
+
+    fig.add_trace(go.Scatter(
+        x=df_combinado['Mbps (Media de bajada)'],
+        y=df_combinado['Ingresos (miles de pesos)'],
+        mode='markers',
+        name='Ingresos vs Velocidad'
+    ))
+
+    fig.update_layout(
+        title='Ingresos vs Penetración y Velocidad',
+        xaxis_title='Penetración (Accesos por 100 hogares) / Velocidad (Mbps)',
+        yaxis_title='Ingresos (miles de pesos)',
+        height=600,
+        width=800
+    )
+
+    st.plotly_chart(fig)
+
+    # Análisis de regresión
+    slope_penetracion, intercept_penetracion, r_value_penetracion, p_value_penetracion, std_err_penetracion = stats.linregress(df_combinado['Accesos por cada 100 hogares'], df_combinado['Ingresos (miles de pesos)'])
+
+    slope_velocidad, intercept_velocidad, r_value_velocidad, p_value_velocidad, std_err_velocidad = stats.linregress(df_combinado['Mbps (Media de bajada)'], df_combinado['Ingresos (miles de pesos)'])
+
+    st.subheader("Resultados de la Regresión Lineal")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.write("Ingresos vs Penetración:")
+        st.write(f"Pendiente: {slope_penetracion:.2f}")
+        st.write(f"Intersección: {intercept_penetracion:.2f}")
+        st.write(f"R-cuadrado: {r_value_penetracion**2:.2f}")
+        st.write(f"Valor p: {p_value_penetracion:.4f}")
+
+    with col2:
+        st.write("Ingresos vs Velocidad:")
+        st.write(f"Pendiente: {slope_velocidad:.2f}")
+        st.write(f"Intersección: {intercept_velocidad:.2f}")
+        st.write(f"R-cuadrado: {r_value_velocidad**2:.2f}")
+        st.write(f"Valor p: {p_value_velocidad:.4f}")
+
+    st.write("""
+    ### Interpretación de Resultados
+
+    1. **Correlaciones**: 
+    - La correlación entre Ingresos y Penetración es positiva y moderada.
+    - La correlación entre Ingresos y Velocidad es más fuerte, indicando una relación más estrecha.
+
+    2. **Regresión Lineal**:
+    - Tanto la Penetración como la Velocidad muestran una relación estadísticamente significativa con los Ingresos (valores p < 0.05).
+    - La Velocidad explica una mayor proporción de la variabilidad en los Ingresos (R-cuadrado más alto) en comparación con la Penetración.
+
+    3. **Implicaciones**:
+    - Mejorar la velocidad del servicio podría tener un impacto más significativo en los ingresos que aumentar la penetración.
+    - Sin embargo, ambos factores son importantes y deben considerarse en las estrategias de crecimiento.
+
+    4. **Consideraciones adicionales**:
+    - Pueden existir otros factores no considerados en este análisis que influyan en los ingresos.
+    - La relación puede no ser estrictamente lineal, y podrían existir efectos de interacción entre la penetración y la velocidad.
+    """)
    
     # Sección 6: Provincias por Velocidad y Penetración
     st.header("Top 5 Provincias por Velocidad y Penetración")
@@ -566,13 +656,30 @@ elif page == "KPIs":
     # Estadísticas adicionales
     provincias_cumplen = df_grafico[df_grafico['Incremento_FO'] >= 5]['Provincia'].tolist()
     provincias_no_cumplen = df_grafico[df_grafico['Incremento_FO'] < 5]['Provincia'].tolist()
+    promedio_incremento = df_grafico['Incremento_FO'].mean()
+    provincia_mayor_incremento = df_grafico.loc[df_grafico['Incremento_FO'].idxmax(), 'Provincia']
+    mayor_incremento = df_grafico['Incremento_FO'].max()
+    provincia_menor_incremento = df_grafico.loc[df_grafico['Incremento_FO'].idxmin(), 'Provincia']
+    menor_incremento = df_grafico['Incremento_FO'].min()
+    # Título principal
+    st.markdown("<h3 style='text-align: center; color: #1f77b4;'>Estadísticas de Incremento en la Adopción de Fibra Óptica</h3>", unsafe_allow_html=True)
 
-    st.write(f"Provincias que cumplen el objetivo (>= 5% de incremento): {', '.join(provincias_cumplen)}")
-    st.write(f"Provincias que no cumplen el objetivo (< 5% de incremento): {', '.join(provincias_no_cumplen)}")
-    st.write(f"Promedio de incremento en adopción de Fibra Óptica: {df_grafico['Incremento_FO'].mean():.2f}%")
-    st.write(f"Provincia con mayor incremento: {df_grafico['Provincia'].iloc[-1]} ({df_grafico['Incremento_FO'].max():.2f}%)")
-    st.write(f"Provincia con menor incremento: {df_grafico['Provincia'].iloc[0]} ({df_grafico['Incremento_FO'].min():.2f}%)")
-    
+    # Provincias que cumplen el objetivo
+    st.markdown("<h6>Provincias que cumplen el objetivo (>= 5% de incremento):</h6>", unsafe_allow_html=True)
+    st.write(f"<ul style='margin-left: 20px;'><li>{'</li><li>'.join(provincias_cumplen)}</li></ul>", unsafe_allow_html=True)
+
+    # Provincias que no cumplen el objetivo
+    st.markdown("<h6>Provincias que no cumplen el objetivo (< 5% de incremento):</h6>", unsafe_allow_html=True)
+    st.write(f"<ul style='margin-left: 20px;'><li>{'</li><li>'.join(provincias_no_cumplen)}</li></ul>", unsafe_allow_html=True)
+
+    # Promedio de incremento
+    st.markdown(f"<h6>Promedio de incremento en adopción de Fibra Óptica: <span>{promedio_incremento:.2f}%</span></h6>", unsafe_allow_html=True)
+
+    # Provincia con mayor incremento
+    st.markdown(f"<h6>Provincia con mayor incremento: <span>{provincia_mayor_incremento} ({mayor_incremento:.2f}%)</span></h6>", unsafe_allow_html=True)
+
+    # Provincia con menor incremento
+    st.markdown(f"<h6>Provincia con menor incremento: <span>{provincia_menor_incremento} ({menor_incremento:.2f}%)</span></h6>", unsafe_allow_html=True)
     # KPI 3: Reducción de la Brecha Digital entre Provincias
     st.header("KPI 3: Reducción de la Brecha Digital entre Provincias")
 
@@ -650,16 +757,18 @@ elif page == "Conclusiones":
     st.title("Conclusiones del Análisis")
 
     st.write("""
-    Basándonos en el análisis realizado, hemos llegado a las siguientes conclusiones:
+    **El servicio de Internet es un sector en crecimiento y en expansión constante, acompañado del surgimiento de nuevas tecnólogias asociadas (que potencian este auge) la convierten en una inversión con un ratio de riesgo/rentabilidad muy bueno.** 
+             
+    A pesar de esto es imprescindible abordar las inversiones futuras con una perspectiva más amplia para evitar la sobresaturación del mercado. Para ello destacamos los siguientes puntos:
 
     1. **Crecimiento Asimétrico:**
        - La velocidad de internet ha crecido un 2554.36% entre 2014 y 2024.
        - La penetración de internet en hogares aumentó un 99.04% en el mismo período.
-       - Esto sugiere un enfoque en mejorar la calidad del servicio más que en expandir la cobertura.
+       - Esto sugiere un enfoque en **mejorar la calidad del servicio más que en expandir la cobertura**.
 
     2. **Impacto Económico de la Velocidad:**
-       - La velocidad de internet muestra una correlación más fuerte con los ingresos del sector (R-cuadrado: 0.84) 
-         que la penetración (R-cuadrado: 0.56).
+       - La velocidad de internet muestra una correlación más fuerte con los ingresos del sector (R-cuadrado: 0.83) 
+         que la penetración (R-cuadrado: 0.58).
        - Invertir en infraestructura para aumentar la velocidad podría ser más rentable que simplemente expandir la cobertura.
 
     3. **Brecha Digital Geográfica:**
@@ -670,11 +779,7 @@ elif page == "Conclusiones":
        - Se observa una transición desde tecnologías más antiguas como ADSL hacia opciones más modernas como la fibra óptica.
        - Esta transición no es uniforme en todas las provincias, contribuyendo a la brecha digital.
 
-    5. **Punto de Inflexión en 2017:**
-       - Se identificó un punto de inflexión alrededor de 2017, donde tanto la penetración como la velocidad 
-         comenzaron a crecer más rápidamente.
-
-    6. **Desafíos para la Universalización del Servicio:**
+    5. **Desafíos para la Universalización del Servicio:**
        - A pesar del crecimiento significativo, aún existen desafíos para lograr una cobertura universal de 
          internet de alta velocidad en Argentina.
        - Las diferencias geográficas y socioeconómicas siguen siendo factores importantes que influyen en el 
