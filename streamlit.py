@@ -268,11 +268,7 @@ elif page == "Análisis":
     - 2014: Predominio de ADSL y Cablemodem.
     - 2024: Liderazgo de Cablemodem y Fibra Óptica, con ADSL en declive.
 
-    2. **Variaciones Regionales:**
-    - Buenos Aires y Córdoba: Patrones similares al nacional.
-    - Mendoza y Tucumán: Adopción acelerada de Fibra Óptica, superando otras tecnologías.
-
-    3. **Disparidad en Adopción de Fibra Óptica:**
+    2. **Disparidad en Adopción de Fibra Óptica:**
     - Concentración en provincias más pobladas (Buenos Aires, Córdoba, Santa Fe).
     - Menor penetración en provincias menos pobladas o remotas.
     """)
@@ -285,9 +281,54 @@ elif page == "Análisis":
     3. **Oportunidades de Mercado:** Potencial de crecimiento en áreas con baja penetración de tecnologías avanzadas.
     4. **Obsolescencia Tecnológica:** Necesidad de estrategias para la transición de usuarios de ADSL a tecnologías más modernas.
     """)
+    # Sección 5: Distribución de Velocidades entre Provincias
+    st.header("Distribución de Velocidades entre Provincias")
 
+    # Cargar y preparar los datos
+    df_prov = dfs['Accesos por velocidad']
+    velocidades_prov = [col for col in df_prov.columns if 'bps' in col.lower() or 'mbps' in col.lower()]
+
+    # Seleccionar el último período disponible
+    ultimo_periodo = df_prov[df_prov['Año'] == df_prov['Año'].max()]
+    ultimo_periodo = ultimo_periodo[ultimo_periodo['Trimestre'] == ultimo_periodo['Trimestre'].max()]
+
+    # Calcular el porcentaje de cada velocidad por provincia
+    for velocidad in velocidades_prov:
+        ultimo_periodo[f'{velocidad} %'] = ultimo_periodo[velocidad] / ultimo_periodo['Total'] * 100
+
+    # Top 5 provincias con mayor número de accesos
+    top_5_provincias = ultimo_periodo.nlargest(5, 'Total')
+
+    # Selector para comparar provincias
+    provincias_seleccionadas = st.multiselect(
+        "Selecciona provincias para comparar:",
+        options=ultimo_periodo['Provincia'].unique(),
+        default=top_5_provincias['Provincia'].tolist()[:2]
+    )
+
+    if provincias_seleccionadas:
+        fig_comparacion = go.Figure()
+        
+        for provincia in provincias_seleccionadas:
+            datos_provincia = ultimo_periodo[ultimo_periodo['Provincia'] == provincia]
+            fig_comparacion.add_trace(go.Bar(
+                x=velocidades_prov,
+                y=datos_provincia[velocidades_prov].iloc[0],
+                name=provincia
+            ))
+        
+        fig_comparacion.update_layout(
+            title=f'Comparación de Distribución de Velocidades entre Provincias Seleccionadas',
+            xaxis_title='Velocidad',
+            yaxis_title='Número de Accesos',
+            barmode='group'
+        )
+        
+        st.plotly_chart(fig_comparacion)
+    else:
+        st.write("Por favor, selecciona al menos una provincia para comparar.")
    
-    # Sección 5: Provincias por Velocidad y Penetración
+    # Sección 6: Provincias por Velocidad y Penetración
     st.header("Top 5 Provincias por Velocidad y Penetración")
 
     # Obtener el último año y trimestre disponible
@@ -354,7 +395,7 @@ elif page == "Análisis":
         st.dataframe(penetracion_reciente[['Provincia', 'Accesos por cada 100 hogares']])
 
     # Breve conclusión
-    st.subheader("Conclusión")
+    st.subheader("Observaciones:")
     st.write("""
     El análisis del top 5 de provincias por velocidad y penetración de internet revela interesantes patrones:
 
@@ -365,6 +406,7 @@ elif page == "Análisis":
 
     Estos resultados subrayan la importancia de estrategias diferenciadas por provincia para mejorar tanto la velocidad como la penetración de internet, considerando las características únicas de cada región.
     """)
+
 
 elif page == "KPIs":
     st.title("Indicadores Clave de Desempeño (KPIs)")
